@@ -162,7 +162,17 @@ const app = {
         document.getElementById('detail-no').textContent = `0${cand.id}`;
         document.getElementById('detail-names').textContent = `${cand.ketua} & ${cand.wakil}`;
         document.getElementById('detail-vision').innerHTML = cand.visi;
-        document.getElementById('detail-mission').innerHTML = cand.misi;
+        
+        // Auto-format misi text into HTML list if it contains numbered points (e.g., "1. ", "2. ")
+        let formattedMisi = cand.misi;
+        if (formattedMisi && !formattedMisi.includes('<') && formattedMisi.match(/\d+\./)) {
+            const parts = formattedMisi.split(/(?:\d+\.)\s*/).filter(p => p.trim().length > 0);
+            if (parts.length > 0) {
+                formattedMisi = `<ol class='list-decimal pl-5 space-y-2'>` + parts.map(p => `<li>${p.trim()}</li>`).join('') + `</ol>`;
+            }
+        }
+        document.getElementById('detail-mission').innerHTML = formattedMisi;
+        
         document.getElementById('detail-foto').src = cand.foto || app.getPlaceholder(cand.id);
         
         state.selectedCandidateId = id;
