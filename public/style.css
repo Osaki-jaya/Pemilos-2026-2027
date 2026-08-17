@@ -1,0 +1,76 @@
+/* Custom Styles on top of Tailwind */
+
+body {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.page {
+    animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Form Styles */
+input[type="text"] {
+    transition: all 0.2s ease-in-out;
+}
+
+input[type="text"]:focus {
+    box-shadow: 0 0 0 4px rgba(178, 197, 255, 0.3); /* primary-fixed-dim */
+}
+
+/* Custom Checkbox */
+input[type="checkbox"]:checked {
+    background-image: url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M12.207 4.793a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0l-2-2a1 1 0 011.414-1.414L6.5 9.086l4.293-4.293a1 1 0 011.414 0z'/%3e%3c/svg%3e");
+    background-color: #003d9b;
+    border-color: #003d9b;
+}
+
+/* Choices.js Customization to match Tailwind styles */
+.choices__inner {
+    background-color: #ffffff;
+    border: 2px solid #c3c6d6;
+    border-radius: 0.5rem; /* rounded-lg */
+    min-height: 3.5rem; /* h-14 */
+    display: flex;
+    align-items: center;
+    padding: 0 1rem; /* px-4 */
+    font-family: inherit;
+    transition: border-color 0.2s ease-in-out;
+}
+.choices.is-focused .choices__inner {
+    border-color: #003d9b; /* primary */
+    box-shadow: 0 0 0 4px rgba(178, 197, 255, 0.3); /* focus ring */
+}
+.choices__list--dropdown {
+    border-radius: 0.5rem;
+    border: 1px solid #c3c6d6;
+    z-index: 50;
+    word-break: break-word;
+}
+.choices__list--dropdown .choices__item--selectable.is-highlighted {
+    background-color: #f3f3fd; /* surface-container-low */
+    color: #003d9b; /* primary */
+}
+.choices[data-type*="select-one"]::after {
+    border: none;
+    content: "\e5c5";
+    font-family: 'Material Symbols Outlined';
+    font-size: 24px;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    color: #737685;
+}
+.choices.is-open[data-type*="select-one"]::after {
+    transform: translateY(-50%) rotate(180deg);
+}
+.choices__list--dropdown .choices__item {
+    font-size: 16px;
+}

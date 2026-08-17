@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Pemilihan OSIS</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#003d9b",
+                        "primary-fixed-dim": "#b2c5ff",
+                        "primary-container": "#0052cc",
+                        "on-primary": "#ffffff",
+                        "on-primary-container": "#c4d2ff",
+                        "on-primary-fixed-variant": "#0040a2",
+                        "surface": "#faf8ff",
+                        "surface-container": "#ededf8",
+                        "surface-container-low": "#f3f3fd",
+                        "surface-container-lowest": "#ffffff",
+                        "on-surface": "#191b23",
+                        "on-surface-variant": "#434654",
+                        "outline": "#737685",
+                        "outline-variant": "#c3c6d6",
+                        "error": "#ba1a1a",
+                        "on-error": "#ffffff",
+                        "error-container": "#ffdad6",
+                        "secondary": "#565f6a",
+                        "secondary-container": "#dae3f0",
+                        "on-secondary-container": "#5c6570"
+                    },
+                    fontFamily: {
+                        body: ["Hanken Grotesk", "sans-serif"]
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .toggle-checkbox:checked { right: 0; border-color: #003d9b; }
+        .toggle-checkbox:checked + .toggle-label { background-color: #003d9b; }
+        .toggle-checkbox:checked + .toggle-label:after { transform: translateX(100%); border-color: white; }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen flex flex-col font-body antialiased">
+    
+    <!-- Top Navigation -->
+    <header class="bg-surface border-b border-outline-variant flex justify-between items-center w-full px-5 h-16 sticky top-0 z-50">
+        <div class="flex items-center gap-4">
+            <a href="index.html" class="flex items-center justify-center w-10 h-10 text-on-surface-variant hover:bg-surface-container rounded-full transition-colors" title="Kembali ke Pemilihan">
+                <span class="material-symbols-outlined text-[24px]" style="font-variation-settings: 'FILL' 0;">school</span>
+            </a>
+            <h1 class="text-xl font-bold text-primary truncate">Dashboard Admin</h1>
+        </div>
+        <div class="flex items-center gap-4">
+            <button id="btn-logout" onclick="admin.logout()" class="hidden flex items-center justify-center text-error hover:bg-error-container p-2 rounded-full transition-colors" title="Logout">
+                <span class="material-symbols-outlined text-[24px]">logout</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="fixed inset-0 bg-surface/80 backdrop-blur-sm z-[100] flex flex-col items-center justify-center hidden">
+        <div class="w-12 h-12 border-4 border-outline-variant border-t-primary rounded-full animate-spin"></div>
+        <p id="loading-message" class="mt-4 text-on-surface-variant font-medium">Memuat...</p>
+    </div>
+
+    <!-- Main Content -->
+    <main class="flex-grow flex flex-col px-5 py-8 w-full max-w-4xl mx-auto">
+        
+        <!-- ==================== 1. LOGIN PAGE ==================== -->
+        <section id="page-login" class="page flex-grow flex items-center justify-center hidden">
+            <div class="w-full max-w-md bg-surface-container-lowest rounded-xl shadow-sm border border-outline-variant p-8 relative overflow-hidden">
+                <div class="absolute top-0 left-0 w-full h-1 bg-primary"></div>
+                <div class="flex flex-col items-center mb-6">
+                    <div class="w-16 h-16 bg-primary-container rounded-full flex items-center justify-center mb-4 text-on-primary-container">
+                        <span class="material-symbols-outlined text-3xl">admin_panel_settings</span>
+                    </div>
+                    <h2 class="text-2xl font-bold text-center">Login Administrator</h2>
+                    <p class="text-on-surface-variant text-center mt-1 text-sm">Sistem Informasi Manajemen Pemilihan</p>
+                </div>
+                
+                <form id="login-form" onsubmit="admin.login(event)" class="space-y-4">
+                    <div>
+                        <label class="font-semibold block mb-1" for="password">Password</label>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-outline">
+                                <span class="material-symbols-outlined">lock</span>
+                            </span>
+                            <input type="password" id="password" required class="w-full h-12 pl-12 pr-4 bg-surface-container rounded-lg border-2 border-transparent focus:border-primary focus:bg-surface-container-lowest outline-none transition-colors" placeholder="••••••••">
+                        </div>
+                    </div>
+                    <div id="login-error" class="text-error text-sm font-medium hidden">Password salah.</div>
+                    <button type="submit" id="btn-login" class="w-full h-12 bg-primary text-on-primary rounded-lg font-semibold hover:bg-on-primary-fixed-variant transition-colors flex items-center justify-center gap-2 mt-4">
+                        <span>Masuk Dashboard</span>
+                        <span class="material-symbols-outlined">arrow_forward</span>
+                    </button>
+                </form>
+            </div>
+        </section>
+
+        <!-- ==================== 2. DASHBOARD PAGE ==================== -->
+        <section id="page-dashboard" class="page flex flex-col gap-6 hidden">
+            
+            <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+                <div>
+                    <h2 class="text-3xl font-extrabold text-on-surface">Hasil Real-Time</h2>
+                    <p class="text-on-surface-variant mt-1">Sistem Rekapitulasi Suara Otomatis</p>
+                </div>
+                <button onclick="admin.fetchDashboard()" class="flex items-center gap-2 bg-surface-container-high px-4 py-2 rounded-full shadow-sm border border-surface-variant hover:bg-surface-variant transition-colors">
+                    <span class="material-symbols-outlined text-sm">refresh</span>
+                    <span class="text-xs font-bold text-on-surface-variant uppercase tracking-widest">Refresh</span>
+                </button>
+            </div>
+
+            <!-- Stats Grid -->
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                <div class="col-span-2 md:col-span-1 bg-surface-container-lowest p-6 rounded-xl shadow-sm border border-surface-variant flex flex-col justify-between">
+                    <div class="flex items-center gap-2 mb-2">
+                        <span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">how_to_vote</span>
+                        <h3 class="font-semibold text-on-surface">Total Suara Masuk</h3>
+                    </div>
+                    <div>
+                        <p class="text-4xl font-extrabold text-primary" id="stat-total">0</p>
+                        <p class="text-xs font-bold text-on-surface-variant mt-1 uppercase">Siswa Terdaftar</p>
+                    </div>
+                </div>
+                <div class="col-span-2 md:col-span-2 bg-surface-container-lowest p-6 rounded-xl shadow-sm border border-outline-variant relative overflow-hidden group">
+                    <div class="flex flex-col gap-1 z-10 relative">
+                        <span class="text-xs font-bold text-on-surface-variant uppercase tracking-wider">Kontrol Form Voting</span>
+                        <div class="flex items-center gap-3">
+                            <span class="material-symbols-outlined text-primary text-3xl" id="status-icon" style="font-variation-settings: 'FILL' 1;">how_to_vote</span>
+                            <h3 class="font-bold text-on-surface text-xl" id="status-text">Status: Memeriksa...</h3>
+                        </div>
+                    </div>
+                    <div class="absolute right-6 top-1/2 -translate-y-1/2 z-10">
+                        <div class="relative inline-block w-20 h-10 align-middle select-none">
+                            <input type="checkbox" id="voting-toggle" onchange="admin.toggleStatus(this.checked)" class="toggle-checkbox absolute block w-10 h-10 rounded-full bg-white border-4 border-surface-variant appearance-none cursor-pointer transition-transform duration-300 ease-in-out"/>
+                            <label for="voting-toggle" class="toggle-label block overflow-hidden h-10 rounded-full bg-surface-variant cursor-pointer transition-colors duration-300 ease-in-out"></label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chart Section -->
+            <div class="bg-surface-container-lowest p-6 rounded-xl shadow-sm border border-surface-variant">
+                <h3 class="font-semibold text-on-surface mb-4">Perolehan Suara Sementara</h3>
+                <div class="relative h-64 w-full">
+                    <canvas id="resultsChart"></canvas>
+                </div>
+            </div>
+            
+            <div class="text-center text-sm text-on-surface-variant mt-4">
+                Data terakhir diambil pada: <span id="last-update" class="font-bold">-</span>
+            </div>
+
+        </section>
+
+    </main>
+
+    <script src="admin.js"></script>
+</body>
+</html>
