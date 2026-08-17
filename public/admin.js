@@ -1,14 +1,15 @@
 // Admin Configuration
 const config = {
     // TODO: Replace with actual Google Apps Script Web App URL
-    gasEndpoint: 'https://script.google.com/macros/s/AKfycbyPLACEHOLDER/exec',
+    gasEndpoint: 'https://script.google.com/macros/s/AKfycbyv3Tclg2ecqhoQy3M3PbI9gYeKa4Odvbhhs6o_fjbLzAmWH7StG_hThXspe1B3mnH2dg/exec',
     tokenKey: 'osis_admin_token'
 };
 
 // Admin State
 const state = {
     token: sessionStorage.getItem(config.tokenKey),
-    chartInstance: null
+    chartInstance: null,
+    pieChartInstance: null
 };
 
 // Admin UI Controller
@@ -144,6 +145,11 @@ const admin = {
 
         // Update Chart
         const ctx = document.getElementById('resultsChart').getContext('2d');
+        const bgColors = [
+            'rgba(0, 61, 155, 0.8)', // Primary
+            'rgba(86, 95, 106, 0.8)', // Secondary
+            'rgba(123, 38, 0, 0.8)'   // Tertiary
+        ];
         
         if (state.chartInstance) {
             state.chartInstance.data.labels = data.candidates;
@@ -157,11 +163,7 @@ const admin = {
                     datasets: [{
                         label: 'Perolehan Suara',
                         data: data.votes || [],
-                        backgroundColor: [
-                            'rgba(0, 61, 155, 0.8)', // Primary
-                            'rgba(86, 95, 106, 0.8)', // Secondary
-                            'rgba(123, 38, 0, 0.8)'   // Tertiary
-                        ],
+                        backgroundColor: bgColors,
                         borderWidth: 0,
                         borderRadius: 4
                     }]
@@ -177,6 +179,34 @@ const admin = {
                             beginAtZero: true,
                             ticks: { precision: 0 }
                         }
+                    }
+                }
+            });
+        }
+
+        // Update Pie Chart
+        const pieCtx = document.getElementById('pieChart').getContext('2d');
+        if (state.pieChartInstance) {
+            state.pieChartInstance.data.labels = data.candidates;
+            state.pieChartInstance.data.datasets[0].data = data.votes;
+            state.pieChartInstance.update();
+        } else {
+            state.pieChartInstance = new Chart(pieCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: data.candidates || [],
+                    datasets: [{
+                        data: data.votes || [],
+                        backgroundColor: bgColors,
+                        borderWidth: 2,
+                        borderColor: '#ffffff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom' }
                     }
                 }
             });
