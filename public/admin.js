@@ -64,13 +64,17 @@ const admin = {
             
             const data = await response.json();
             
-            if (data.status === 'success' && data.token) {
-                state.token = data.token;
-                sessionStorage.setItem(config.tokenKey, state.token);
-                this.showPage('dashboard');
-                this.fetchDashboard();
+            if (data.status === 'success') {
+                if (data.token) {
+                    state.token = data.token;
+                    sessionStorage.setItem(config.tokenKey, state.token);
+                    this.showPage('dashboard');
+                    this.fetchDashboard();
+                } else {
+                    throw new Error('AdminToken belum diisi di Google Sheet (Sel B3)');
+                }
             } else {
-                throw new Error(data.message || 'Login gagal');
+                throw new Error(data.message || 'Gagal terhubung ke server');
             }
         } catch (err) {
             console.error('Login error:', err);
