@@ -247,12 +247,17 @@ const app = {
                 if (responseData.status === 'success') {
                     success = true;
                 } else {
-                    throw new Error(responseData.message || 'Gagal mengirim suara.');
+                    // Logic error from backend, DO NOT RETRY!
+                    errorMsg.textContent = responseData.message || 'Gagal mengirim suara.';
+                    errorMsg.classList.remove('hidden');
+                    btn.disabled = false;
+                    btn.innerHTML = 'Kirim Suara <span class="material-symbols-outlined">send</span>';
+                    return; // exit function immediately without retrying
                 }
             } catch (err) {
                 console.error(`Attempt ${attempt} failed:`, err);
                 if (attempt >= config.maxRetries) {
-                    errorMsg.textContent = `Error: ${err.message}. Pastikan nama Anda belum digunakan.`;
+                    errorMsg.textContent = `Terjadi kesalahan jaringan. Silakan coba lagi.`;
                     errorMsg.classList.remove('hidden');
                     btn.disabled = false;
                     btn.innerHTML = 'Coba Lagi <span class="material-symbols-outlined">refresh</span>';

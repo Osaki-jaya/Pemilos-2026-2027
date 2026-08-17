@@ -111,7 +111,7 @@ function handleGetResults(token) {
     totalVotes = data.length > 1 ? data.length - 1 : 0; // exclude header
     
     for (let i = 1; i < data.length; i++) {
-      const paslonId = data[i][2];
+      const paslonId = data[i][3]; // Kolom D (index 3) adalah ID Paslon
       voteCounts[paslonId] = (voteCounts[paslonId] || 0) + 1;
     }
   }
@@ -160,8 +160,8 @@ function handleVote(payload) {
     // Check if Nama and Kelas already voted
     const data = sheet.getDataRange().getValues();
     for (let i = 1; i < data.length; i++) {
-      if (String(data[i][1]).toLowerCase() === String(nama).toLowerCase() && String(data[i][2]) === String(kelas)) {
-        return jsonResponse({status: 'error', message: 'Nama dan Kelas ini sudah digunakan untuk memilih'});
+      if (String(data[i][1]).trim().toLowerCase() === String(nama).trim().toLowerCase() && String(data[i][2]).trim() === String(kelas).trim()) {
+        return jsonResponse({status: 'error', message: 'Siswa dengan Nama dan Kelas ini sudah memberikan suara.'});
       }
     }
     
