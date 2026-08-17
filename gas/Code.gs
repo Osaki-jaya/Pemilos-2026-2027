@@ -125,7 +125,7 @@ function handleGetResults(token) {
   let counts = [];
   
   candidatesList.forEach(c => {
-    labels.push(`${c.ketua} & ${c.wakil}`);
+    labels.push(`Paslon 0${c.id}`);
     counts.push(voteCounts[c.id] || 0);
   });
   

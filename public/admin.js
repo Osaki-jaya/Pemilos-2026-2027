@@ -202,15 +202,37 @@ const admin = {
                     datasets: [{
                         data: data.votes || [],
                         backgroundColor: bgColors,
-                        borderWidth: 2,
-                        borderColor: '#ffffff'
+                        borderWidth: 3,
+                        borderColor: '#ffffff',
+                        hoverOffset: 8
                     }]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
+                    cutout: '55%',
+                    layout: {
+                        padding: 10
+                    },
                     plugins: {
-                        legend: { position: 'bottom' }
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                padding: 16,
+                                usePointStyle: true,
+                                pointStyle: 'circle',
+                                font: { size: 12, weight: '600' }
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(ctx) {
+                                    const total = ctx.dataset.data.reduce((a, b) => a + b, 0);
+                                    const pct = total > 0 ? ((ctx.raw / total) * 100).toFixed(1) : 0;
+                                    return ` ${ctx.label}: ${ctx.raw} suara (${pct}%)`;
+                                }
+                            }
+                        }
                     }
                 }
             });
