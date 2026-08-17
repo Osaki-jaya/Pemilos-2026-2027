@@ -1,7 +1,7 @@
 // Admin Configuration
 const config = {
     // TODO: Replace with actual Google Apps Script Web App URL
-    gasEndpoint: 'https://script.google.com/macros/s/AKfycbyv3Tclg2ecqhoQy3M3PbI9gYeKa4Odvbhhs6o_fjbLzAmWH7StG_hThXspe1B3mnH2dg/exec',
+    gasEndpoint: 'https://script.google.com/macros/s/AKfycby6jBIm0SIWgGZJv8TP6FY3BIkvowf0eLMb0jRXrmfGJYL-u2qcM5T7bn9yxuNzt40JIQ/exec',
     tokenKey: 'osis_admin_token'
 };
 
