@@ -78,6 +78,36 @@
         <p id="loading-message" class="mt-4 text-on-surface-variant font-medium">Memuat...</p>
     </div>
 
+    <!-- Error Modal Popup -->
+    <div id="error-modal" class="fixed inset-0 bg-slate-950/70 backdrop-blur-sm z-[200] flex items-center justify-center p-4 hidden">
+        <div class="bg-surface-container-lowest max-w-md w-full rounded-2xl shadow-2xl border border-outline-variant overflow-hidden relative p-6 text-center transform transition-all">
+            <!-- Red accent bar -->
+            <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-red-600 via-amber-500 to-red-600"></div>
+            
+            <div class="w-16 h-16 rounded-full bg-red-100 text-red-600 flex items-center justify-center mx-auto mb-4 border-2 border-red-200">
+                <span class="material-symbols-outlined text-4xl" style="font-variation-settings: 'FILL' 1;">warning</span>
+            </div>
+            
+            <h3 class="text-xl font-black text-on-surface mb-2" id="modal-error-title">Kendala Pengiriman Suara</h3>
+            
+            <div class="bg-red-50 border border-red-200 rounded-xl p-3.5 mb-4 text-left">
+                <span class="text-[10px] font-bold text-red-800 uppercase tracking-wider block mb-1">Pemberitahuan Sistem:</span>
+                <p class="text-sm font-bold text-red-700 leading-snug" id="modal-error-desc">
+                    Terjadi kesalahan saat memproses data voting.
+                </p>
+            </div>
+            
+            <p class="text-xs text-on-surface-variant mb-6 leading-relaxed">
+                👉 <strong>Instruksi Panitia:</strong> Jika Anda belum pernah memilih atau mengalami kendala ini, silakan <strong>segera laporkan kepada Panitia / Saksi TPS di tempat</strong>.
+            </p>
+            
+            <button type="button" onclick="app.closeErrorModal()" class="w-full h-12 bg-primary hover:bg-on-primary-fixed-variant text-on-primary font-bold rounded-xl shadow-md transition-all flex items-center justify-center gap-2">
+                <span>Tutup & Coba Lagi</span>
+                <span class="material-symbols-outlined text-lg">close</span>
+            </button>
+        </div>
+    </div>
+
     <!-- Main Content Container -->
     <main class="flex-grow flex flex-col px-5 py-8 w-full max-w-4xl mx-auto" id="app-container">
 

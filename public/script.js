@@ -32,6 +32,20 @@ const app = {
         return url;
     },
 
+    showErrorModal: function(title, message) {
+        const titleEl = document.getElementById('modal-error-title');
+        const descEl = document.getElementById('modal-error-desc');
+        const modal = document.getElementById('error-modal');
+        if (titleEl) titleEl.textContent = title || 'Kendala Pengiriman Suara';
+        if (descEl) descEl.textContent = message || 'Terjadi kesalahan sistem saat memproses data.';
+        if (modal) modal.classList.remove('hidden');
+    },
+
+    closeErrorModal: function() {
+        const modal = document.getElementById('error-modal');
+        if (modal) modal.classList.add('hidden');
+    },
+
     init: async function() {
         this.showLoading('Menghubungkan ke server...');
         
@@ -49,6 +63,7 @@ const app = {
             console.error('Error fetching status:', error);
             document.getElementById('voting-status-text').textContent = 'Gagal memuat status.';
             document.getElementById('voting-status-text').classList.add('text-error');
+            app.showErrorModal('Koneksi Terputus', 'Gagal memuat status pemilihan dari server. Pastikan perangkat terhubung ke Wi-Fi / internet dan laporkan ke panitia.');
         }
         
         this.hideLoading();
@@ -263,19 +278,23 @@ const app = {
                     success = true;
                 } else {
                     // Logic error from backend, DO NOT RETRY!
-                    errorMsg.textContent = responseData.message || 'Gagal mengirim suara.';
+                    const msg = responseData.message || 'Gagal mengirim suara.';
+                    errorMsg.textContent = msg;
                     errorMsg.classList.remove('hidden');
                     btn.disabled = false;
                     btn.innerHTML = 'Kirim Suara <span class="material-symbols-outlined">send</span>';
+                    app.showErrorModal('Gagal Mengirim Suara', msg);
                     return; // exit function immediately without retrying
                 }
             } catch (err) {
                 console.error(`Attempt ${attempt} failed:`, err);
                 if (attempt >= config.maxRetries) {
-                    errorMsg.textContent = `Terjadi kesalahan jaringan. Silakan coba lagi.`;
+                    const netMsg = 'Terjadi gangguan jaringan / server sibuk. Silakan coba kembali atau panggil panitia TPS.';
+                    errorMsg.textContent = netMsg;
                     errorMsg.classList.remove('hidden');
                     btn.disabled = false;
                     btn.innerHTML = 'Coba Lagi <span class="material-symbols-outlined">refresh</span>';
+                    app.showErrorModal('Gangguan Koneksi Jaringan', netMsg);
                     return; // exit function
                 }
                 // Wait before retry
