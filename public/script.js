@@ -19,6 +19,19 @@ const app = {
         return `data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='500' viewBox='0 0 400 500'%3E%3Crect width='100%25' height='100%25' fill='%23ededf8'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='24px' font-weight='bold' fill='%23737685'%3EFOTO PASLON 0${id}%3C/text%3E%3C/svg%3E`;
     },
 
+    getPhotoUrl: function(url, id) {
+        if (!url || typeof url !== 'string' || !url.trim()) {
+            return this.getPlaceholder(id);
+        }
+        url = url.trim();
+        // Convert Google Drive share link to direct image link
+        const driveMatch = url.match(/\/d\/([a-zA-Z0-9_-]+)/) || url.match(/id=([a-zA-Z0-9_-]+)/);
+        if (driveMatch && driveMatch[1]) {
+            return `https://lh3.googleusercontent.com/d/${driveMatch[1]}`;
+        }
+        return url;
+    },
+
     init: async function() {
         this.showLoading('Menghubungkan ke server...');
         
@@ -127,12 +140,13 @@ const app = {
         state.candidates.forEach(cand => {
             const card = document.createElement('div');
             card.className = 'bg-surface-container-lowest rounded-xl p-6 shadow-sm border border-outline-variant hover:border-primary transition-colors duration-200 group relative flex flex-col md:flex-row gap-6';
+            const photoSrc = app.getPhotoUrl(cand.foto, cand.id);
             card.innerHTML = `
                 <div class="absolute top-0 right-0 bg-primary text-on-primary text-xl font-bold w-12 h-12 flex items-center justify-center rounded-bl-xl rounded-tr-xl shadow-sm z-10">
                     0${cand.id}
                 </div>
                 <div class="w-full md:w-48 h-56 md:h-auto shrink-0 rounded-lg overflow-hidden bg-surface-container-high relative border border-outline-variant">
-                    <img src="${cand.foto || app.getPlaceholder(cand.id)}" alt="Foto Paslon ${cand.id}" class="w-full h-full object-cover object-top" onerror="this.src=app.getPlaceholder(${cand.id})">
+                    <img src="${photoSrc}" alt="Foto Paslon ${cand.id}" class="w-full h-full object-cover object-top" onerror="this.src=app.getPlaceholder(${cand.id})">
                 </div>
                 <div class="flex-1 flex flex-col justify-center mt-4 md:mt-0">
                     <div class="mb-4">
@@ -173,7 +187,7 @@ const app = {
         }
         document.getElementById('detail-mission').innerHTML = formattedMisi;
         
-        document.getElementById('detail-foto').src = cand.foto || app.getPlaceholder(cand.id);
+        document.getElementById('detail-foto').src = app.getPhotoUrl(cand.foto, cand.id);
         
         state.selectedCandidateId = id;
         this.showPage('vision');
