@@ -139,28 +139,29 @@ const app = {
 
         state.candidates.forEach(cand => {
             const card = document.createElement('div');
-            card.className = 'bg-surface-container-lowest rounded-xl p-6 shadow-sm border border-outline-variant hover:border-primary transition-colors duration-200 group relative flex flex-col md:flex-row gap-6';
+            card.className = 'bg-surface-container-lowest rounded-2xl p-6 shadow-sm border border-outline-variant hover:border-primary hover:shadow-md transition-all duration-200 group relative flex flex-col md:flex-row gap-6';
             const photoSrc = app.getPhotoUrl(cand.foto, cand.id);
             card.innerHTML = `
-                <div class="absolute top-0 right-0 bg-primary text-on-primary text-xl font-bold w-12 h-12 flex items-center justify-center rounded-bl-xl rounded-tr-xl shadow-sm z-10">
-                    0${cand.id}
+                <div class="absolute top-0 right-0 bg-primary text-on-primary text-base font-black px-4 py-1.5 rounded-bl-2xl rounded-tr-2xl shadow-sm z-10">
+                    PASLON 0${cand.id}
                 </div>
-                <div class="w-full md:w-48 h-56 md:h-auto shrink-0 rounded-lg overflow-hidden bg-surface-container-high relative border border-outline-variant">
-                    <img src="${photoSrc}" alt="Foto Paslon ${cand.id}" class="w-full h-full object-cover object-top" onerror="this.src=app.getPlaceholder(${cand.id})">
+                <div class="w-full md:w-56 h-64 md:h-64 shrink-0 rounded-xl overflow-hidden bg-slate-900/5 relative border border-outline-variant flex items-center justify-center p-1">
+                    <img src="${photoSrc}" alt="Foto Paslon ${cand.id}" class="w-full h-full object-cover object-top rounded-lg" onerror="this.src=app.getPlaceholder(${cand.id})">
                 </div>
-                <div class="flex-1 flex flex-col justify-center mt-4 md:mt-0">
+                <div class="flex-1 flex flex-col justify-between py-1">
                     <div class="mb-4">
-                        <h3 class="text-lg font-bold text-on-surface mb-1">Ketua: ${cand.ketua}</h3>
-                        <h3 class="text-lg font-bold text-on-surface-variant">Wakil: ${cand.wakil}</h3>
+                        <span class="inline-block text-xs font-extrabold text-primary bg-primary/10 px-3 py-1 rounded-full mb-3 uppercase tracking-wider">Kandidat No. 0${cand.id}</span>
+                        <h3 class="text-xl font-bold text-on-surface mb-1.5">Ketua: <span class="font-extrabold text-primary">${cand.ketua}</span></h3>
+                        <h3 class="text-xl font-bold text-on-surface-variant">Wakil: <span class="font-extrabold text-on-surface">${cand.wakil}</span></h3>
                     </div>
-                    <div class="flex flex-col sm:flex-row gap-3 mt-auto">
-                        <button onclick="app.showVision(${cand.id})" class="text-primary hover:text-on-primary-fixed-variant text-sm font-bold flex items-center justify-center gap-1 px-4 py-3 rounded-lg border border-outline-variant hover:border-primary transition-colors w-full sm:w-auto">
+                    <div class="flex flex-col sm:flex-row gap-3 mt-auto pt-4 border-t border-outline-variant/60">
+                        <button onclick="app.showVision(${cand.id})" class="text-primary hover:bg-primary/5 text-sm font-bold flex items-center justify-center gap-1.5 px-4 py-3 rounded-xl border border-primary/40 hover:border-primary transition-colors w-full sm:w-auto">
                             <span class="material-symbols-outlined text-[18px]">visibility</span>
-                            Lihat Visi-Misi
+                            Lihat Visi & Misi
                         </button>
-                        <button onclick="app.selectCandidate(${cand.id})" class="bg-primary hover:bg-on-primary-fixed-variant text-on-primary text-sm font-bold px-6 py-3 rounded-lg shadow-sm w-full sm:w-auto flex items-center justify-center gap-2 transition-colors">
+                        <button onclick="app.selectCandidate(${cand.id})" class="bg-primary hover:bg-on-primary-fixed-variant text-on-primary text-sm font-bold px-6 py-3 rounded-xl shadow-md w-full sm:w-auto flex items-center justify-center gap-2 transition-all">
                             <span class="material-symbols-outlined">how_to_vote</span>
-                            Pilih
+                            Pilih Paslon Ini
                         </button>
                     </div>
                 </div>
