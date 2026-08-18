@@ -145,8 +145,8 @@ const app = {
                 <div class="absolute top-0 right-0 bg-primary text-on-primary text-base font-black px-4 py-1.5 rounded-bl-2xl rounded-tr-2xl shadow-sm z-10">
                     PASLON 0${cand.id}
                 </div>
-                <div class="w-full md:w-56 h-64 md:h-64 shrink-0 rounded-xl overflow-hidden bg-slate-900/5 relative border border-outline-variant flex items-center justify-center p-1">
-                    <img src="${photoSrc}" alt="Foto Paslon ${cand.id}" class="w-full h-full object-cover object-top rounded-lg" onerror="this.src=app.getPlaceholder(${cand.id})">
+                <div class="w-full md:w-64 h-72 md:h-72 shrink-0 rounded-xl overflow-hidden bg-slate-900/5 relative border border-outline-variant flex items-center justify-center p-1">
+                    <img src="${photoSrc}" alt="Foto Paslon ${cand.id}" class="w-full h-full object-cover rounded-lg" style="object-position: center 60%;" onerror="this.src=app.getPlaceholder(${cand.id})">
                 </div>
                 <div class="flex-1 flex flex-col justify-between py-1">
                     <div class="mb-4">
