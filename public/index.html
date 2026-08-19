@@ -179,9 +179,9 @@
 
             <article
                 class="bg-surface-container-lowest rounded-2xl shadow-sm overflow-hidden border border-outline-variant">
-                <!-- Foto Paslon Container - Auto fit so portrait photos are 100% visible -->
-                <div class="w-full bg-slate-950/5 flex items-center justify-center p-4 md:p-6 relative border-b border-outline-variant">
-                    <img id="detail-foto" src="" alt="Foto Paslon" class="max-h-[500px] w-auto max-w-full object-contain rounded-xl shadow-md">
+                <!-- Foto Paslon Container -->
+                <div class="w-full bg-surface-container-low flex items-center justify-center p-6 relative">
+                    <img id="detail-foto" src="" alt="Foto Paslon" class="w-64 h-64 md:w-80 md:h-80 object-cover rounded-full shadow-lg border-4 border-surface-container-lowest">
                 </div>
                 <div class="p-6 md:p-8">
                     <div class="mb-6 pb-6 border-b border-outline-variant">
@@ -262,7 +262,7 @@
                 </div>
 
                 <div class="flex flex-col gap-1 relative z-50">
-                    <label class="font-semibold text-on-surface-variant" for="kelas">Kelas</label>
+                    <label class="font-semibold text-on-surface-variant" for="kelas">Kelas <span class="text-xs font-normal text-outline">(Opsional bagi Guru/Staf Sekolah)</span></label>
                     <select id="kelas" required
                         class="w-full h-14 px-4 rounded-lg border-2 border-outline-variant bg-surface-container-lowest focus:border-primary outline-none transition-colors">
                         <option value="" disabled selected>Pilih Kelas</option>
@@ -338,6 +338,16 @@
                             <option value="XI DPIB 1">XI DPIB 1</option>
                             <option value="XI DPIB 2">XI DPIB 2</option>
                         </optgroup>
+                    </select>
+                </div>
+
+                <div class="flex flex-col gap-1 relative z-40 mt-2">
+                    <label class="font-semibold text-on-surface-variant" for="status_pemilih">Status</label>
+                    <select id="status_pemilih" required
+                        class="w-full h-14 px-4 rounded-lg border-2 border-outline-variant bg-surface-container-lowest focus:border-primary outline-none transition-colors">
+                        <option value="" disabled selected>Pilih Status</option>
+                        <option value="Siswa">Siswa</option>
+                        <option value="Guru/Staf">Guru/Staf Sekolah</option>
                     </select>
                 </div>
 

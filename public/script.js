@@ -79,6 +79,17 @@ const app = {
                 searchPlaceholderValue: 'Cari kelas...'
             });
         }
+
+        const statusSelect = document.getElementById('status_pemilih');
+        if (statusSelect) {
+            statusSelect.addEventListener('change', function(e) {
+                if (e.target.value === 'Guru/Staf') {
+                    kelasSelect.removeAttribute('required');
+                } else {
+                    kelasSelect.setAttribute('required', 'required');
+                }
+            });
+        }
     },
 
     fetchStatus: async function() {
@@ -154,16 +165,16 @@ const app = {
 
         state.candidates.forEach(cand => {
             const card = document.createElement('div');
-            card.className = 'bg-surface-container-lowest rounded-2xl p-6 shadow-sm border border-outline-variant hover:border-primary hover:shadow-md transition-all duration-200 group relative flex flex-col md:flex-row gap-6';
+            card.className = 'bg-surface-container-lowest rounded-2xl p-0 shadow-sm border border-outline-variant hover:border-primary hover:shadow-md transition-all duration-300 group relative flex flex-col md:flex-row';
             const photoSrc = app.getPhotoUrl(cand.foto, cand.id);
             card.innerHTML = `
                 <div class="absolute top-0 right-0 bg-primary text-on-primary text-base font-black px-4 py-1.5 rounded-bl-2xl rounded-tr-2xl shadow-sm z-10">
                     PASLON 0${cand.id}
                 </div>
-                <div class="w-full md:w-64 h-72 md:h-72 shrink-0 rounded-xl overflow-hidden bg-slate-900/5 relative border border-outline-variant flex items-center justify-center p-1">
-                    <img src="${photoSrc}" alt="Foto Paslon ${cand.id}" class="w-full h-full object-cover rounded-lg" style="object-position: center 60%;" onerror="this.src=app.getPlaceholder(${cand.id})">
+                <div class="w-full md:w-48 h-64 md:h-auto shrink-0 rounded-t-2xl md:rounded-l-2xl md:rounded-tr-none overflow-hidden bg-surface-container-low relative">
+                    <img src="${photoSrc}" alt="Foto Paslon ${cand.id}" class="w-full h-full object-cover object-top" onerror="this.src=app.getPlaceholder(${cand.id})">
                 </div>
-                <div class="flex-1 flex flex-col justify-between py-1">
+                <div class="flex-1 flex flex-col justify-center p-6 mt-2 md:mt-0">
                     <div class="mb-4">
                         <span class="inline-block text-xs font-extrabold text-primary bg-primary/10 px-3 py-1 rounded-full mb-3 uppercase tracking-wider">Kandidat No. 0${cand.id}</span>
                         <h3 class="text-xl font-bold text-on-surface mb-1.5">Ketua: <span class="font-extrabold text-primary">${cand.ketua}</span></h3>
@@ -230,15 +241,26 @@ const app = {
         e.preventDefault();
         
         const nama = document.getElementById('nama').value.trim();
-        const kelas = document.getElementById('kelas').value;
+        let kelas = document.getElementById('kelas').value;
+        const statusPemilih = document.getElementById('status_pemilih').value;
         const agreement = document.getElementById('agreement').checked;
 
-        if (!nama || !kelas || !agreement) return;
+        if (!nama || !statusPemilih || !agreement) return;
+
+        if (statusPemilih === 'Siswa' && !kelas) {
+            app.showErrorModal('Data Tidak Lengkap', 'Silakan pilih kelas Anda.');
+            return;
+        }
+
+        if (statusPemilih === 'Guru/Staf') {
+            kelas = '-';
+        }
 
         const payload = {
             action: 'vote',
             nama: nama,
             kelas: kelas,
+            status: statusPemilih,
             paslonId: state.selectedCandidateId,
             sessionId: navigator.userAgent + '-' + new Date().getTime() // simple session identifier
         };

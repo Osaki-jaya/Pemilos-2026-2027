@@ -157,17 +157,27 @@
             </div>
 
             <!-- Stats Grid -->
-            <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <div
-                    class="col-span-2 md:col-span-1 bg-surface-container-lowest p-6 rounded-xl shadow-sm border border-surface-variant flex flex-col justify-between">
+                    class="col-span-2 md:col-span-1 bg-surface-container-lowest p-5 rounded-xl shadow-sm border border-surface-variant flex flex-col justify-between">
                     <div class="flex items-center gap-2 mb-2">
                         <span class="material-symbols-outlined text-primary"
                             style="font-variation-settings: 'FILL' 1;">how_to_vote</span>
-                        <h3 class="font-semibold text-on-surface">Total Suara Masuk</h3>
+                        <h3 class="font-semibold text-on-surface text-sm">Total Suara</h3>
                     </div>
                     <div>
-                        <p class="text-4xl font-extrabold text-primary" id="stat-total">0</p>
-                        <p class="text-xs font-bold text-on-surface-variant mt-1 uppercase">Siswa Terdaftar</p>
+                        <p class="text-3xl font-extrabold text-primary" id="stat-total">0</p>
+                        <p class="text-[10px] font-bold text-on-surface-variant mt-1 uppercase">Siswa & Guru/Staf</p>
+                    </div>
+                </div>
+                <div class="col-span-2 md:col-span-1 bg-surface-container-lowest p-5 rounded-xl shadow-sm border border-surface-variant flex flex-col justify-center gap-3">
+                    <div class="flex justify-between items-center bg-surface-container-low p-2 rounded-lg">
+                        <span class="text-xs font-bold text-on-surface-variant uppercase">Siswa</span>
+                        <span class="text-lg font-extrabold text-primary" id="stat-siswa">0</span>
+                    </div>
+                    <div class="flex justify-between items-center bg-surface-container-low p-2 rounded-lg">
+                        <span class="text-xs font-bold text-on-surface-variant uppercase">Guru/Staf</span>
+                        <span class="text-lg font-extrabold text-secondary" id="stat-guru">0</span>
                     </div>
                 </div>
                 <div

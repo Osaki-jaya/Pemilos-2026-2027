@@ -104,9 +104,13 @@ const admin = {
                 await new Promise(r => setTimeout(r, 800));
                 this.updateDashboardUI({
                     totalVotes: 875,
+                    totalSiswa: 800,
+                    totalGuru: 75,
                     isOpen: true,
                     candidates: ["Budi & Siti", "Ahmad & Rina", "Dewi & Joko"],
-                    votes: [450, 300, 125]
+                    votes: [450, 300, 125],
+                    votesSiswa: [400, 280, 120],
+                    votesGuru: [50, 20, 5]
                 });
                 this.hideLoading();
                 return;
@@ -135,6 +139,8 @@ const admin = {
 
     updateDashboardUI: function(data) {
         document.getElementById('stat-total').textContent = data.totalVotes || 0;
+        document.getElementById('stat-siswa').textContent = data.totalSiswa || 0;
+        document.getElementById('stat-guru').textContent = data.totalGuru || 0;
         
         const now = new Date();
         document.getElementById('last-update').textContent = now.toLocaleTimeString('id-ID');
@@ -157,20 +163,43 @@ const admin = {
         
         if (state.chartInstance) {
             state.chartInstance.data.labels = data.candidates;
-            state.chartInstance.data.datasets[0].data = data.votes;
+            if (data.votesSiswa && data.votesGuru) {
+                if (state.chartInstance.data.datasets.length === 1) {
+                    // Convert single dataset to dual dataset
+                    state.chartInstance.data.datasets = [
+                        { label: 'Suara Siswa', data: data.votesSiswa, backgroundColor: 'rgba(0, 61, 155, 0.8)', borderWidth: 0, borderRadius: 4 },
+                        { label: 'Suara Guru/Staf', data: data.votesGuru, backgroundColor: 'rgba(86, 95, 106, 0.8)', borderWidth: 0, borderRadius: 4 }
+                    ];
+                } else {
+                    state.chartInstance.data.datasets[0].data = data.votesSiswa;
+                    state.chartInstance.data.datasets[1].data = data.votesGuru;
+                }
+            } else {
+                state.chartInstance.data.datasets[0].data = data.votes;
+            }
             state.chartInstance.update();
         } else {
+            let datasets = [];
+            if (data.votesSiswa && data.votesGuru) {
+                datasets = [
+                    { label: 'Suara Siswa', data: data.votesSiswa, backgroundColor: 'rgba(0, 61, 155, 0.8)', borderWidth: 0, borderRadius: 4 },
+                    { label: 'Suara Guru/Staf', data: data.votesGuru, backgroundColor: 'rgba(86, 95, 106, 0.8)', borderWidth: 0, borderRadius: 4 }
+                ];
+            } else {
+                datasets = [{
+                    label: 'Perolehan Suara',
+                    data: data.votes || [],
+                    backgroundColor: bgColors,
+                    borderWidth: 0,
+                    borderRadius: 4
+                }];
+            }
+
             state.chartInstance = new Chart(ctx, {
                 type: 'bar',
                 data: {
                     labels: data.candidates || [],
-                    datasets: [{
-                        label: 'Perolehan Suara',
-                        data: data.votes || [],
-                        backgroundColor: bgColors,
-                        borderWidth: 0,
-                        borderRadius: 4
-                    }]
+                    datasets: datasets
                 },
                 options: {
                     responsive: true,
