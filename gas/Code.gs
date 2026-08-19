@@ -104,7 +104,11 @@ function handleGetResults(token) {
   const votesSheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_VOTES);
   
   let totalVotes = 0;
+  let totalSiswa = 0;
+  let totalGuru = 0;
   let voteCounts = {};
+  let voteCountsSiswa = {};
+  let voteCountsGuru = {};
   
   if (votesSheet) {
     const data = votesSheet.getDataRange().getValues();
@@ -112,7 +116,17 @@ function handleGetResults(token) {
     
     for (let i = 1; i < data.length; i++) {
       const paslonId = data[i][3]; // Kolom D (index 3) adalah ID Paslon
+      const statusVoter = data[i][5] || 'Siswa'; // Kolom F (index 5) adalah Status, default Siswa
+      
       voteCounts[paslonId] = (voteCounts[paslonId] || 0) + 1;
+      
+      if (statusVoter === 'Guru/Staf') {
+        voteCountsGuru[paslonId] = (voteCountsGuru[paslonId] || 0) + 1;
+        totalGuru++;
+      } else {
+        voteCountsSiswa[paslonId] = (voteCountsSiswa[paslonId] || 0) + 1;
+        totalSiswa++;
+      }
     }
   }
   
@@ -123,23 +137,31 @@ function handleGetResults(token) {
   
   let labels = [];
   let counts = [];
+  let countsSiswa = [];
+  let countsGuru = [];
   
   candidatesList.forEach(c => {
     labels.push(`Paslon 0${c.id}`);
     counts.push(voteCounts[c.id] || 0);
+    countsSiswa.push(voteCountsSiswa[c.id] || 0);
+    countsGuru.push(voteCountsGuru[c.id] || 0);
   });
   
   return jsonResponse({
     status: 'success',
     totalVotes: totalVotes,
+    totalSiswa: totalSiswa,
+    totalGuru: totalGuru,
     isOpen: isOpen,
     candidates: labels,
-    votes: counts
+    votes: counts,
+    votesSiswa: countsSiswa,
+    votesGuru: countsGuru
   });
 }
 
 function handleVote(payload) {
-  const { nama, kelas, paslonId, sessionId } = payload;
+  const { nama, kelas, status, paslonId, sessionId } = payload;
   
   if (getConfigValue('StatusForm') !== 'BUKA') {
     return jsonResponse({status: 'error', message: 'Voting sedang ditutup'});
@@ -161,13 +183,13 @@ function handleVote(payload) {
     const data = sheet.getDataRange().getValues();
     for (let i = 1; i < data.length; i++) {
       if (String(data[i][1]).trim().toLowerCase() === String(nama).trim().toLowerCase() && String(data[i][2]).trim() === String(kelas).trim()) {
-        return jsonResponse({status: 'error', message: 'Siswa dengan Nama dan Kelas ini sudah memberikan suara.'});
+        return jsonResponse({status: 'error', message: 'Pemilih dengan Nama dan Kelas ini sudah memberikan suara.'});
       }
     }
     
     // Insert new vote
     const timestamp = new Date();
-    sheet.appendRow([timestamp, nama, kelas, paslonId, sessionId]);
+    sheet.appendRow([timestamp, nama, kelas, paslonId, sessionId, status || 'Siswa']);
     
     return jsonResponse({status: 'success'});
     
