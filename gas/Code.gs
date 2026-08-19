@@ -57,7 +57,7 @@ function doPost(e) {
 // Handlers
 // ==========================================
 
-function handleGetStatus() {
+function _getRawStatus() {
   const isOpen = getConfigValue('StatusForm') === 'BUKA';
   
   const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_KANDIDAT);
@@ -88,11 +88,29 @@ function handleGetStatus() {
     ];
   }
   
-  return jsonResponse({
+  return { isOpen: isOpen, kandidat: kandidat };
+}
+
+function handleGetStatus() {
+  const cache = CacheService.getScriptCache();
+  const cachedData = cache.get('election_status');
+  
+  if (cachedData) {
+    return ContentService.createTextOutput(cachedData).setMimeType(ContentService.MimeType.JSON);
+  }
+  
+  const data = _getRawStatus();
+  
+  const responseData = {
     status: 'success',
-    isOpen: isOpen,
-    kandidat: kandidat
-  });
+    isOpen: data.isOpen,
+    kandidat: data.kandidat
+  };
+  
+  const jsonString = JSON.stringify(responseData);
+  cache.put('election_status', jsonString, 60); // Cache for 60 seconds
+  
+  return ContentService.createTextOutput(jsonString).setMimeType(ContentService.MimeType.JSON);
 }
 
 function handleGetResults(token) {
@@ -131,9 +149,8 @@ function handleGetResults(token) {
   }
   
   // Build chart data
-  const kandidatData = handleGetStatus().getContent();
-  const parsedStatus = JSON.parse(kandidatData);
-  const candidatesList = parsedStatus.kandidat;
+  const kandidatData = _getRawStatus();
+  const candidatesList = kandidatData.kandidat;
   
   let labels = [];
   let counts = [];
@@ -215,6 +232,9 @@ function handleToggleStatus(token, isOpen) {
   
   const newValue = isOpen ? 'BUKA' : 'TUTUP';
   setConfigValue('StatusForm', newValue);
+  
+  const cache = CacheService.getScriptCache();
+  cache.remove('election_status');
   
   return jsonResponse({status: 'success'});
 }
