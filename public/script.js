@@ -325,6 +325,10 @@ const app = {
         }
 
         if (success) {
+            // Reset button state for the next user
+            btn.disabled = false;
+            btn.innerHTML = 'Kirim Suara <span class="material-symbols-outlined">send</span>';
+            
             // Save to local storage to prevent double voting on this device
             localStorage.setItem(config.sessionKey, 'voted');
             this.showPage('success');
