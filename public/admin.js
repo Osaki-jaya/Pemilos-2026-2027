@@ -40,7 +40,7 @@ const admin = {
             if (config.gasEndpoint.includes('PLACEHOLDER')) {
                 // Mock login for placeholder
                 await new Promise(r => setTimeout(r, 1000));
-                if (password === 'pemilos2026') {
+                if (password === 'admin2026') {
                     state.token = 'mock-token-123';
                     sessionStorage.setItem(config.tokenKey, state.token);
                     this.showPage('dashboard');
